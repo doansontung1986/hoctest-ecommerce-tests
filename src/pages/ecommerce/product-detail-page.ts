@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "./base-page";
+import { BasePage } from "../base-page";
+import { ReviewData } from "../../utils/generate-test-data";
 
 export class ProductDetailPage extends BasePage {
   readonly productNameLoc: Locator;
@@ -55,13 +56,7 @@ export class ProductDetailPage extends BasePage {
     await this.reviewsTab.click();
   }
 
-  async postReview(reviewInfo: {
-    rating: number;
-    your_review: string;
-    name: string;
-    email: string;
-    save_info: boolean;
-  }): Promise<void> {
+  async postReview(reviewInfo: ReviewData): Promise<void> {
     await this.ratingStar.nth(reviewInfo.rating - 1).click();
     await this.yourReviewArea.fill(reviewInfo.your_review);
     await this.reviewerName.fill(reviewInfo.name);

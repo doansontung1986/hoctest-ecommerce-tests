@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { SearchResultPage } from "./search-result-page";
 import { ProductDetailPage } from "./product-detail-page";
-import { BasePage } from "./base-page";
+import { BasePage } from "../base-page";
 
 export class HomePage extends BasePage {
   readonly searchTextbox: Locator;
@@ -26,7 +26,7 @@ export class HomePage extends BasePage {
   }
 
   async goToEcommerceSite(): Promise<void> {
-    await this.page.goto("https://e-commerce-dev.betterbytesvn.com/");
+    await this.page.goto("/");
   }
 
   async searchForKeyword(keyword: string): Promise<SearchResultPage> {

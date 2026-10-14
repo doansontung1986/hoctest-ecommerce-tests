@@ -8,6 +8,10 @@ export class BasePage {
   }
 
   async refreshBrowser(): Promise<void> {
-    await this.page.reload();
+    await this.page.reload({ waitUntil: "load" });
+  }
+
+  async goBack(): Promise<void> {
+    await this.page.goBack();
   }
 }
