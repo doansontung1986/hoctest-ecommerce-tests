@@ -1,6 +1,6 @@
-import { faker } from "@faker-js/faker";
+import { fa, faker } from "@faker-js/faker";
 
-type ReviewData = {
+export type ReviewData = {
   rating: number;
   your_review: string;
   name: string;
@@ -8,39 +8,41 @@ type ReviewData = {
   save_info: boolean;
 };
 
-export function createReviewInfo(
-  rating: number,
-  your_review: string,
-  name: string,
-  email: string,
-  save_info: boolean = false,
-): ReviewData {
-  rating = faker.number.int({ min: 1, max: 5 });
+export type CredentialData = {
+  username: string;
+  password: string;
+  rememberMe: boolean;
+  shouldSuccess: boolean;
+};
 
-  switch (rating) {
-    case 1:
-      your_review = "Khoá học quá tệ";
-      break;
-    case 2:
-      your_review = "Khoá học tệ";
-      break;
-    case 3:
-      your_review = "Khoá học bình thường";
-      break;
-    case 4:
-      your_review = "Khoá học tốt";
-      break;
-    case 5:
-      your_review = "Khoá học chất lượng";
-      break;
-    default:
-      your_review = "Review không hợp lệ";
-  }
+export function createReviewInfo(overrides: Partial<ReviewData>): ReviewData {
+  const rating = overrides.rating || faker.number.int({ min: 1, max: 5 });
+
+  const reviewText: Record<number, string> = {
+    1: "Khoá học quá tệ",
+    2: "Khoá học tệ",
+    3: "Khoá học bình thường",
+    4: "Khoá học tốt",
+    5: "Khoá học chất lượng",
+  };
   return {
     rating,
-    your_review,
+    your_review: reviewText[rating] ?? "Review không hợp lệ",
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    save_info,
+    save_info: false,
+    ...overrides,
+  };
+}
+
+export function createCredentialInfo(
+  ovverides: Partial<CredentialData>,
+): CredentialData {
+  return {
+    username: faker.internet.username(),
+    password: faker.internet.password(),
+    rememberMe: false,
+    shouldSuccess: false,
+    ...ovverides,
   };
 }

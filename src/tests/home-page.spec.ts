@@ -1,7 +1,7 @@
 import { test, expect, Locator, chromium } from "@playwright/test";
-import { HomePage } from "../pages/home-page";
-import { SearchResultPage } from "../pages/search-result-page";
-import { ProductDetailPage } from "../pages/product-detail-page";
+import { HomePage } from "../pages/ecommerce/home-page";
+import { SearchResultPage } from "../pages/ecommerce/search-result-page";
+import { ProductDetailPage } from "../pages/ecommerce/product-detail-page";
 import { createReviewInfo } from "../utils/generate-test-data";
 
 test.describe("Home Page Test", { tag: "@home" }, () => {
@@ -22,13 +22,11 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
       in_stock: true,
     },
 
-    review_info: createReviewInfo(
-      5,
-      "Khóa học chất lượng",
-      "Tung Doan",
-      "doansontung2608@gmail.com",
-      true,
-    ),
+    review_info: createReviewInfo({
+      rating: 5,
+      your_review: "Khóa học chất lượng",
+      save_info: true,
+    }),
   };
 
   test.beforeEach(async ({ page }) => {
