@@ -3,11 +3,14 @@ import { HomePage } from "../../pages/ecommerce/home-page";
 import { SearchResultPage } from "../../pages/ecommerce/search-result-page";
 import { ProductDetailPage } from "../../pages/ecommerce/product-detail-page";
 import { createReviewInfo } from "../../utils/generate-test-data";
+import { TopMenu } from "../../pages/ecommerce/top-menu";
+import { ProductListingPage } from "../../pages/ecommerce/product-listing-page";
 
 test.describe("Home Page Test", { tag: "@home" }, () => {
+  let topMenu: TopMenu;
   let homePage: HomePage;
-  let searchResult: SearchResultPage;
-  let productDetaiPage: ProductDetailPage;
+  let searchResultPage: SearchResultPage;
+  let productDetailPage: ProductDetailPage;
   let homePage2: HomePage;
   let productDetaiPage2: ProductDetailPage;
 
@@ -31,6 +34,7 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page);
+    topMenu = new TopMenu(page);
     await homePage.goToEcommerceSite();
   });
 
@@ -46,24 +50,24 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
     });
 
     await test.step("Verify searchbox", async () => {
-      await expect(homePage.searchTextbox).toBeVisible();
+      await expect(topMenu.searchTextbox).toBeVisible();
     });
 
     await test.step("Verify menu", async () => {
-      await expect(homePage.homeMenu).toBeVisible();
-      await expect(homePage.courseListMenu).toBeVisible();
-      await expect(homePage.blogMenu).toBeVisible();
+      await expect(topMenu.homeMenu).toBeVisible();
+      await expect(topMenu.courseListMenu).toBeVisible();
+      await expect(topMenu.blogMenu).toBeVisible();
     });
   });
 
-  test("HOME_002: Verify search box work properly", async ({ page }) => {
+  test("HOME_002: Verify search box work properly", async ({}) => {
     await test.step("Search for a keyword", async () => {
-      searchResult = await homePage.searchForKeyword(data.keyword);
+      searchResultPage = await topMenu.searchForKeyword(data.keyword);
     });
 
     await test.step("Verify product card contains ISTQB", async () => {
       const productList: Locator =
-        await searchResult.getProductListMatchKeyword(data.keyword);
+        await searchResultPage.getProductListMatchKeyword(data.keyword);
 
       (await productList.all()).forEach((product) =>
         expect(product).toContainText("ISTQB"),
@@ -71,32 +75,32 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
     });
 
     await test.step("Verify text showing number of results", async () => {
-      await expect(searchResult.showingTextResult).toBeVisible();
+      await expect(searchResultPage.showingTextResult).toBeVisible();
     });
 
     await test.step("Verify the total product cards match the number of results", async () => {
       const productList: Locator =
-        await searchResult.getProductListMatchKeyword(data.keyword);
+        await searchResultPage.getProductListMatchKeyword(data.keyword);
       const numberOfResults =
-        await searchResult.getCountFromShowingResultText();
+        await searchResultPage.getCountFromShowingResultText();
       expect(productList).toHaveCount(numberOfResults);
     });
   });
 
   test("HOME_003: Verify product information", async ({ page }) => {
     await test.step("Select a course", async () => {
-      productDetaiPage = await homePage.selectCourse(data.product.name);
+      productDetailPage = await homePage.selectCourse(data.product.name);
     });
 
     await test.step("Verify information on PDP", async () => {
-      await expect(productDetaiPage.productNameLoc).toHaveText(
+      await expect(productDetailPage.productNameLoc).toHaveText(
         data.product.name,
       );
-      await expect(productDetaiPage.priceLoc).toHaveText(data.product.price);
-      await expect(productDetaiPage.discountPriceLoc).toHaveText(
+      await expect(productDetailPage.priceLoc).toHaveText(data.product.price);
+      await expect(productDetailPage.discountPriceLoc).toHaveText(
         data.product.discount_price,
       );
-      await expect(productDetaiPage.description).toHaveText(
+      await expect(productDetailPage.description).toHaveText(
         data.product.description,
       );
     });
@@ -104,21 +108,23 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
     await test.step("Verify Add to Cart CTA behavior", async () => {
       /* If the product is in-stock, then 'Add to Cart' CTA is enabled and clickable.
         Otherwise, 'Add to Cart' CTA is disabled 
-    */
+      */
       if (data.product.in_stock) {
-        await productDetaiPage.clickAddToCart();
-        await expect(productDetaiPage.message).toContainText(data.product.name);
+        await productDetailPage.clickAddToCart();
+        await expect(productDetailPage.message).toContainText(
+          data.product.name,
+        );
       } else {
-        await expect(productDetaiPage.addtoCartBtn).toBeDisabled();
+        await expect(productDetailPage.addtoCartBtn).toBeDisabled();
       }
     });
 
     await test.step("Click on Review tab on PDP", async () => {
-      await productDetaiPage.clickReviewsTab();
+      await productDetailPage.clickReviewsTab();
     });
 
     await test.step("Verify there is no reviews", async () => {
-      await expect(productDetaiPage.noReviewText).toContainText(
+      await expect(productDetailPage.noReviewText).toContainText(
         "There are no reviews yet.",
       );
     });
@@ -126,46 +132,46 @@ test.describe("Home Page Test", { tag: "@home" }, () => {
 
   test("HOME_004: Verify product review", async ({ browser }) => {
     await test.step("Go to PDP and click on review tab", async () => {
-      productDetaiPage = await homePage.selectCourse(data.product.name);
-      await productDetaiPage.clickReviewsTab();
+      productDetailPage = await homePage.selectCourse(data.product.name);
+      await productDetailPage.clickReviewsTab();
     });
 
     await test.step("Verify there is no reviews", async () => {
-      await expect(productDetaiPage.noReviewText).toContainText(
+      await expect(productDetailPage.noReviewText).toContainText(
         "There are no reviews yet.",
       );
     });
 
     await test.step("Verify inforrmation on the review form", async () => {
-      expect(await productDetaiPage.ratingStar.all()).toHaveLength(5);
-      await expect(productDetaiPage.yourReviewArea).toBeVisible();
-      await expect(productDetaiPage.reviewerName).toBeVisible();
-      await expect(productDetaiPage.reviewerEmail).toBeVisible();
+      expect(await productDetailPage.ratingStar.all()).toHaveLength(5);
+      await expect(productDetailPage.yourReviewArea).toBeVisible();
+      await expect(productDetailPage.reviewerName).toBeVisible();
+      await expect(productDetailPage.reviewerEmail).toBeVisible();
       await expect(
-        productDetaiPage.saveInfoForNextReviewCheckbox,
+        productDetailPage.saveInfoForNextReviewCheckbox,
       ).toBeVisible();
     });
 
     await test.step("Post a review", async () => {
-      await productDetaiPage.postReview(data.review_info);
+      await productDetailPage.postReview(data.review_info);
     });
 
     await test.step("Verify the posted review", async () => {
-      await expect(productDetaiPage.ratedReviewStar).toHaveAttribute(
+      await expect(productDetailPage.ratedReviewStar).toHaveAttribute(
         "aria-label",
       );
-      await expect(productDetaiPage.reviewDescription).toHaveText(
+      await expect(productDetailPage.reviewDescription).toHaveText(
         data.review_info.your_review,
       );
     });
 
     await test.step("Refresh browser and check the posted review is persistent", async () => {
-      await productDetaiPage.refreshBrowser();
+      await productDetailPage.refreshBrowser();
 
-      await expect(productDetaiPage.ratedReviewStar).toHaveAttribute(
+      await expect(productDetailPage.ratedReviewStar).toHaveAttribute(
         "aria-label",
       );
-      await expect(productDetaiPage.reviewDescription).toHaveText(
+      await expect(productDetailPage.reviewDescription).toHaveText(
         data.review_info.your_review,
       );
     });

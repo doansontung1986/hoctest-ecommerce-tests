@@ -15,6 +15,15 @@ export type CredentialData = {
   shouldSuccess: boolean;
 };
 
+export type ProductData = {
+  productName: string;
+  productDescription: string;
+  productType: string;
+  isVirtualProduct?: boolean;
+  regularPrice: string;
+  salePrice: string;
+};
+
 export function createReviewInfo(overrides: Partial<ReviewData>): ReviewData {
   const rating = overrides.rating || faker.number.int({ min: 1, max: 5 });
 
@@ -45,4 +54,8 @@ export function createCredentialInfo(
     shouldSuccess: false,
     ...ovverides,
   };
+}
+
+export function generateRandomNumber(): number {
+  return faker.number.int({ min: 1000, max: 10000 });
 }
