@@ -14,4 +14,8 @@ export class BasePage {
   async goBack(): Promise<void> {
     await this.page.goBack();
   }
+
+  async goToEcommerceSite(): Promise<void> {
+    await this.page.goto("/");
+  }
 }

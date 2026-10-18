@@ -28,7 +28,8 @@ export default defineConfig({
     baseURL: "https://e-commerce-dev.betterbytesvn.com/",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "on-all-retries",
+    screenshot: "only-on-failure",
   },
 
   /* Configure projects for major browsers */

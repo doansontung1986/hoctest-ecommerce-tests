@@ -32,10 +32,10 @@ test.describe("Authentication Test", { tag: "@authentication" }, () => {
   });
 
   test.afterEach(async ({ page }) => {
-    // await page.close();
+    await page.close();
   });
 
-  test("Verify UI on Authentication page", async ({ page }) => {
+  test("AUTH_001: Verify UI on Authentication page", async ({}) => {
     await test.step("Verify UI on Login page", async () => {
       await expect(loginPage.userNameField).toBeEditable();
       await expect(loginPage.passwordField).toBeEditable();
@@ -74,9 +74,7 @@ test.describe("Authentication Test", { tag: "@authentication" }, () => {
     });
   });
 
-  test("Verify success authentication with valid credentials", async ({
-    page,
-  }) => {
+  test("AUTH_002: Verify success authentication with valid credentials", async ({}) => {
     await test.step("Login to Ecommerce CMS", async () => {
       dashboardPage = (await loginPage.authenticate(
         credentials.valid,
@@ -90,9 +88,7 @@ test.describe("Authentication Test", { tag: "@authentication" }, () => {
     });
   });
 
-  test("Verify failure authentication with bad credentials", async ({
-    page,
-  }) => {
+  test("AUTH_003: Verify failure authentication with bad credentials", async ({}) => {
     await test.step("Check with user that not exists", async () => {
       await loginPage.authenticate(credentials.invalid_user);
       await expect(loginPage.errorMessage).toContainText(
